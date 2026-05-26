@@ -158,9 +158,10 @@ export default function Login() {
 
             {/* Footer */}
             <div className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-800">
-                Table Track v1.0 | © 2024
+                Table Track v1.0 | © 2026
             </div>
 
         </div>
     );
 }
+
