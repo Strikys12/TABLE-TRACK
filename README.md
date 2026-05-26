@@ -1,7 +1,7 @@
 🍽️ TableTrack - Sistema de Gestión de Reservas
 TableTrack es una solución integral diseñada para la gestión eficiente de reservas en restaurantes. El sistema permite a los anfitriones registrar, editar, filtrar y monitorear el estado de las mesas en tiempo real, garantizando una operación fluida y evitando conflictos de disponibilidad.
 
-🚀 Características Principales
+🚀 Características Principales:
 Gestión de Reservas (CRUD): Creación, edición y eliminación de reservas mediante una interfaz intuitiva.
 
 Validación de Negocio:
