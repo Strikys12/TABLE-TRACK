@@ -59,7 +59,7 @@ export default function Login() {
 
                         {/* Selección de Turno */}
                         <div>
-                            <label className={labelClasses}>Franja Horaria</label>
+                            <label className={labelClasses}>Franja Horaria:</label>
                             <div className="mt-2 grid grid-cols-3 gap-4">
 
                                 {/* Mañana */}
