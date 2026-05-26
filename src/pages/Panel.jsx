@@ -3,17 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { reservationService } from '../services/reservationService';
 import fondoRestaurante from '../assets/panel-bg.png';
-import ReservationTable from '../components/ReservationTable'; // Importación añadida
+import ReservationTable from '../components/ReservationTable';
 
 export default function Panel() {
     const navigate = useNavigate();
     const sessionData = localStorage.getItem('hostSession');
-    const host = sessionData ? JSON.parse(sessionData) : { fullName: 'Anfitrión', shift: 'No asignado' };
 
     const [reservations, setReservations] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [formData, setFormData] = useState({ nombreCliente: '', cantidadPersonas: '', fechaHora: '', estado: 'En Espera' });
     const [editingId, setEditingId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const getMinDate = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        return now.toISOString().slice(0, 16);
+    };
 
     const fetchReservations = async () => {
         try {
@@ -33,10 +39,30 @@ export default function Panel() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.nombreCliente.trim() || !formData.cantidadPersonas) {
-            Swal.fire('Campos Vacíos', 'Nombre y cantidad son requeridos.', 'error');
+
+        // 1. Validaciones de campos
+        if (!formData.nombreCliente.trim() || !formData.cantidadPersonas || !formData.fechaHora) {
+            Swal.fire('Campos Vacíos', 'Todos los campos son obligatorios.', 'error');
             return;
         }
+
+        // 2. Validación de fecha: no permitir pasadas
+        if (new Date(formData.fechaHora) < new Date()) {
+            Swal.fire('Fecha Inválida', 'No puedes crear una reserva en el pasado.', 'error');
+            return;
+        }
+
+        // 3. Validación de disponibilidad: no permitir misma hora
+        const fechaOcupada = reservations.some(
+            (res) => res.fechaHora === formData.fechaHora && res.id !== editingId
+        );
+
+        if (fechaOcupada) {
+            Swal.fire('Horario Ocupado', 'Ya existe una reserva para esa fecha y hora.', 'error');
+            return;
+        }
+
+        setIsLoading(true);
         try {
             if (editingId) {
                 await reservationService.update(editingId, formData);
@@ -47,9 +73,11 @@ export default function Panel() {
             }
             setFormData({ nombreCliente: '', cantidadPersonas: '', fechaHora: '', estado: 'En Espera' });
             setEditingId(null);
-            fetchReservations();
+            await fetchReservations();
         } catch (error) {
             Swal.fire('Error', 'No se pudo procesar la solicitud.', 'error');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -112,15 +140,27 @@ export default function Panel() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <input type="text" value={formData.nombreCliente} onChange={(e) => setFormData({ ...formData, nombreCliente: e.target.value })} className="w-full bg-black/50 border border-orange-950 p-2 rounded" placeholder="Nombre" />
                             <input type="number" value={formData.cantidadPersonas} onChange={(e) => setFormData({ ...formData, cantidadPersonas: e.target.value })} className="w-full bg-black/50 border border-orange-950 p-2 rounded" placeholder="Personas" />
-                            <input type="datetime-local" value={formData.fechaHora} onChange={(e) => setFormData({ ...formData, fechaHora: e.target.value })} className="w-full bg-black/50 border border-orange-950 p-2 rounded" />
-                            <button type="submit" className="w-full bg-orange-600 p-2 rounded">{editingId ? 'Guardar' : 'Registrar'}</button>
+                            <input
+                                type="datetime-local"
+                                min={getMinDate()}
+                                value={formData.fechaHora}
+                                onChange={(e) => setFormData({ ...formData, fechaHora: e.target.value })}
+                                className="w-full bg-black/50 border border-orange-950 p-2 rounded"
+                            />
+
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className={`w-full p-2 rounded transition-all ${isLoading ? 'bg-gray-700 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-500'}`}
+                            >
+                                {isLoading ? 'Procesando...' : (editingId ? 'Guardar Cambios' : 'Registrar')}
+                            </button>
                         </form>
                     </div>
 
                     <div className="lg:col-span-2 space-y-4">
                         <input type="text" placeholder="Buscar..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-black/50 px-4 py-2 rounded-lg border border-orange-950" />
 
-                        {/* Aquí está el componente extraído */}
                         <ReservationTable
                             reservations={filteredReservations}
                             onEdit={handleEditClick}
