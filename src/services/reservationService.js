@@ -1,4 +1,4 @@
-// ⚠️ Reemplaza con tu URL real de MockAPI
+// ⚠️ URL de tu MockAPI
 const API_URL = 'https://6a15ab5f91ff9a63de08967d.mockapi.io/reservations';
 
 export const reservationService = {
@@ -9,23 +9,31 @@ export const reservationService = {
         return await response.json();
     },
 
-    // POST: Crear una nueva reserva
-    create: async (reservationData) => {
+    // POST: Crear una nueva reserva (con saneamiento de datos)
+    create: async (data) => {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(reservationData)
+            body: JSON.stringify({
+                ...data,
+                cantidadPersonas: parseInt(data.cantidadPersonas),
+                mesa: parseInt(data.mesa)
+            })
         });
         if (!response.ok) throw new Error('Error al crear la reserva');
         return await response.json();
     },
 
-    // PUT: Actualizar una reserva existente (o cambiar estado)
-    update: async (id, reservationData) => {
+    // PUT: Actualizar una reserva existente (con saneamiento de datos)
+    update: async (id, data) => {
         const response = await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(reservationData)
+            body: JSON.stringify({
+                ...data,
+                cantidadPersonas: parseInt(data.cantidadPersonas),
+                mesa: parseInt(data.mesa)
+            })
         });
         if (!response.ok) throw new Error('Error al actualizar la reserva');
         return await response.json();
