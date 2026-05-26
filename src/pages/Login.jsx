@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-export default function Login() {
-    return <div className="p-10 text-2xl font-bold">Pantalla de Login</div>;
-=======
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Para la redirección requerida
 import Swal from 'sweetalert2'; // Para las alertas de validación e ingreso
-import restaurantBg from '../assets/restaurante-bg.png';
+import restaurantBg from '../assets/restaurante-bg.png'; // Asegúrate de tener esta imagen en tu carpeta de assets
 
 export default function Login() {
     const [fullName, setFullName] = useState('');
@@ -167,5 +163,4 @@ export default function Login() {
 
         </div>
     );
->>>>>>> develop
 }
