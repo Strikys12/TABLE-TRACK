@@ -1,93 +1,45 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        // 1. Validación de campos vacíos
-        if (!email.trim() || !password.trim()) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Campos vacíos',
-                text: 'Por favor, completa todos los datos para ingresar.',
-            });
-            return;
-        }
-
-        // 2. Simulamos la sesión (Objeto exigido)
-        const mockSession = {
-            email: email,
-            role: 'admin',
-            token: 'fake-jwt-token-12345'
-        };
-
-        localStorage.setItem('hostSession', JSON.stringify(mockSession));
-
-        // 3. Alerta de éxito
-        Swal.fire({
-            icon: 'success',
-            title: '¡Bienvenido!',
-            text: 'Ingreso exitoso al sistema de reservas.',
-            timer: 1500,
-            showConfirmButton: false
-        });
-
-        // 4. Redirección al panel
-        navigate('/panel');
-    };
-
     return (
-        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-gray-900">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-white">
-                    Table Track - Acceso
-                </h2>
+        <div className="flex min-h-screen items-center justify-center bg-gray-950 px-6 py-12 relative overflow-hidden">
+
+            {/* Fondo del restaurante */}
+            <div className="absolute inset-0 bg-gray-950">
+                <div className="absolute -inset-10 bg-orange-900 blur-3xl opacity-30"></div>
+                <div
+                    className="absolute inset-0 bg-cover bg-center opacity-40"
+                    style={{ backgroundImage: `url(${restaurantBg})` }}
+                ></div>
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form className="space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-100">Email address</label>
                         <div className="mt-2">
-                            <input
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:outline-indigo-500"
-                            />
+                            <input type="email" className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:outline-indigo-500" />
                         </div>
-                    </div>
 
+                    </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-100">Password</label>
                         <div className="mt-2">
-                            <input
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:outline-indigo-500"
-                            />
+                            <input type="password" className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:outline-indigo-500" />
                         </div>
                     </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-400"
-                        >
-                            Sign in
-                        </button>
-                    </div>
+                    <button type="button" className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-400">
+                        Sign in
+                    </button>
                 </form>
             </div>
+
+            {/* Footer */}
+            <div className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-800">
+                Table Track v1.0 | © 2026 David Quiroz. Todos los derechos reservados.
+            </div>
+
         </div>
     );
 }
