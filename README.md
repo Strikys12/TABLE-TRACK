@@ -39,7 +39,6 @@ Antes de comenzar, asegúrate de tener instalado en tu sistema:
   👉 Disponible en: https://git-scm.com/
 
 
-
 ## 💻 Instalación y Configuración
 
 Sigue estos pasos para levantar el proyecto en tu entorno local:
@@ -48,18 +47,21 @@ Sigue estos pasos para levantar el proyecto en tu entorno local:
 
 ```bash
 git clone https://github.com/Strikys12/TABLE-TRACK.git
-
 cd TABLE-TRACK
+```
+
 
 ### 2️⃣ Instalar dependencias
 
 ```bash
 npm install
+```
 
 
 ### 3️⃣ Ejecutar el proyecto
-
+```bash
 npm run dev
+```
 
 # 🛠️ Tecnologías y Dependencias
 
@@ -79,7 +81,7 @@ Si necesitas instalar dependencias manualmente:
 
 ```bash
 npm install react-router-dom sweetalert2 axios
-
+```
 
 ## 🧠 Arquitectura y Lógica
 
