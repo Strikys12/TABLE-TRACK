@@ -52,6 +52,20 @@ export default function Panel() {
         navigate('/login');
     };
 
+    const handleComplete = async (res) => {
+        // Esto marca la reserva como 'Finalizada' y actualiza la base de datos
+        const updatedData = { ...res, estado: 'Finalizada' };
+
+        try {
+            await reservationService.update(res.id, updatedData);
+            Swal.fire('¡Éxito!', 'La reserva ha sido finalizada.', 'success');
+            // Recargamos la lista para que se vea el cambio
+            await fetchReservations();
+        } catch (error) {
+            Swal.fire('Error', 'No se pudo completar la reserva.', 'error');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.nombreCliente.trim() || !formData.cantidadPersonas || !formData.fechaHora || !formData.mesa) {
@@ -131,8 +145,8 @@ export default function Panel() {
                             // Ajusté un poco el padding horizontal (px-4 en lugar de px-6) 
                             // para que los botones sean un poco más compactos en pantallas muy pequeñas
                             className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium border transition-all ${filterStatus === status
-                                    ? 'bg-orange-600 border-orange-500 text-white'
-                                    : 'bg-black/50 border-orange-950 text-gray-300 hover:border-orange-700'
+                                ? 'bg-orange-600 border-orange-500 text-white'
+                                : 'bg-black/50 border-orange-950 text-gray-300 hover:border-orange-700'
                                 }`}
                         >
                             {status}
@@ -168,6 +182,7 @@ export default function Panel() {
                                 reservations={reservations.filter(r => (filterStatus === 'Todos' || r.estado === filterStatus) && r.nombreCliente.toLowerCase().includes(searchTerm.toLowerCase()))}
                                 onEdit={handleEditClick}
                                 onDelete={handleDelete}
+                                onComplete={handleComplete}
                                 statusBadgeRenderer={statusBadgeRenderer}
                             />
                         </div>
