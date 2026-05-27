@@ -1,19 +1,65 @@
 import { useState } from 'react';
-import restaurantBg from '../assets/restaurante-bg.png';
+import { useNavigate } from 'react-router-dom'; // Para la redirección requerida
+import Swal from 'sweetalert2'; // Para las alertas de validación e ingreso
+import restaurantBg from '../assets/restaurante-bg.png'; // Asegúrate de tener esta imagen en tu carpeta de assets
 
 export default function Login() {
     const [fullName, setFullName] = useState('');
-    const [shift, setShift] = useState('Noche');
+    const [shift, setShift] = useState('Mañana'); // Turno por defecto
+    const navigate = useNavigate();
 
-    // Clases de Tailwind
-    const inputClasses = "mt-1 w-full rounded-lg bg-black/30 px-4 py-2 text-white outline outline-1 outline-orange-950 focus:outline-2 focus:outline-orange-500 shadow-inner transition-all placeholder:text-gray-600";
+    // Clases estéticas de Tailwind (Manteniendo tu diseño premium)
+    const inputClasses = "mt-1 w-full rounded-lg bg-black/30 px-4 py-2 text-white outline outline-1 outline-orange-950 focus:outline-2 focus:outline-orange-500 shadow-inner transition-all placeholder:text-gray-600 sm:text-sm";
     const labelClasses = "text-sm font-medium text-gray-400";
     const shiftButtonBase = "flex flex-col items-center justify-center p-4 rounded-xl border border-orange-950/30 transition-all cursor-pointer group shadow-lg";
 
-    // Estilos dinámicos de los turnos
+    // Iluminación dinámica de los botones de turnos
     const morningClasses = shift === 'Mañana' ? 'bg-orange-500/10 border-orange-500/50 shadow-[0_0_15px_rgba(251,146,60,0.2)]' : 'bg-black/20 hover:bg-black/30';
     const afternoonClasses = shift === 'Tarde' ? 'bg-yellow-500/10 border-yellow-500/50 shadow-[0_0_15px_rgba(250,204,21,0.2)]' : 'bg-black/20 hover:bg-black/30';
     const nightClasses = shift === 'Noche' ? 'bg-indigo-500/10 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.2)]' : 'bg-black/20 hover:bg-black/30';
+
+    // ==========================================
+    // LÓGICA DEL REQUERIMIENTO 4.1 (PDF)
+    // ==========================================
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // 1. Validar que el campo no esté vacío o lleno de puros espacios
+        if (!fullName.trim()) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Campo incompleto',
+                text: 'Por favor, ingresa tu nombre completo para iniciar el turno.',
+                background: '#111827',
+                color: '#fff',
+                confirmButtonColor: '#ea580c'
+            });
+            return;
+        }
+
+        // 2. Guardar el objeto en LocalStorage exactamente como lo pide el PDF
+        localStorage.setItem(
+            'hostSession',
+            JSON.stringify({
+                fullName: fullName.trim(),
+                shift: shift
+            })
+        );
+
+        // 3. Alerta de éxito con SweetAlert2
+        Swal.fire({
+            icon: 'success',
+            title: '¡Turno Iniciado!',
+            text: `Bienvenido, anfitrión ${fullName}`,
+            timer: 1500,
+            showConfirmButton: false,
+            background: '#111827',
+            color: '#fff'
+        });
+
+        // 4. Redirigir de inmediato al panel de control de reservas
+        navigate('/panel');
+    };
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-950 px-6 py-12 relative overflow-hidden">
@@ -27,7 +73,7 @@ export default function Login() {
                 ></div>
             </div>
 
-            {/* Tarjeta contenedora */}
+            {/* Tarjeta contenedora Glassmorphism */}
             <div className="w-full max-w-md space-y-8 bg-black/40 p-8 rounded-2xl border border-orange-950 backdrop-blur-sm relative z-10 shadow-2xl">
 
                 {/* Encabezado */}
@@ -37,13 +83,14 @@ export default function Login() {
                         <span className="w-4 h-4 rounded-full bg-orange-500 shadow-[0_0_12px_rgba(251,146,60,0.8)]"></span>
                     </h1>
                     <h2 className="mt-4 text-2xl font-bold text-white">¡Bienvenido, Anfitrión!</h2>
-                    <p className="mt-2 text-sm text-gray-500">A continuación, selecciona el turno asignado.</p>
+                    <p className="mt-2 text-sm text-gray-500">Regístrate para comenzar tu turno.</p>
                 </div>
 
-                <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
+                {/* Formulario conectado a la función de ingreso */}
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-5">
 
-                        {/* Campo Nombre Completo (CONECTADO AL ESTADO) */}
+                        {/* Campo Nombre Completo */}
                         <div>
                             <label htmlFor="fullName" className={labelClasses}>Nombre Completo</label>
                             <input
@@ -51,15 +98,15 @@ export default function Login() {
                                 id="fullName"
                                 required
                                 value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
                                 className={inputClasses}
+                                onChange={(e) => setFullName(e.target.value)}
                                 placeholder="Ej: Juan Pérez"
                             />
                         </div>
 
-                        {/* Selección de Turno */}
+                        {/* Selección de Turno Visual */}
                         <div>
-                            <label className={labelClasses}>Franja Horaria</label>
+                            <label className={labelClasses}>Tu Turno Asignado</label>
                             <div className="mt-2 grid grid-cols-3 gap-4">
 
                                 {/* Mañana */}
@@ -111,9 +158,10 @@ export default function Login() {
 
             {/* Footer */}
             <div className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-800">
-                Table Track v1.0 | © 2026 David Quiroz. Todos los derechos reservados.
+                Table Track v1.0 | © 2026
             </div>
 
         </div>
     );
 }
+
