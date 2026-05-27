@@ -38,7 +38,7 @@ Antes de comenzar, asegúrate de tener instalado en tu sistema:
 - **Git**  
   👉 Disponible en: https://git-scm.com/
 
----
+
 
 ## 💻 Instalación y Configuración
 
@@ -51,7 +51,7 @@ git clone https://github.com/Strikys12/TABLE-TRACK.git
 
 cd TABLE-TRACK
 
-## 2️⃣ Instalar dependencias
+### 2️⃣ Instalar dependencias
 
 ```bash
 npm install
