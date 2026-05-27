@@ -106,3 +106,9 @@ Desarrollado con enfoque en:
 - Escalabilidad
 - Experiencia de usuario optimizada
 - Buenas prácticas de desarrollo frontend
+
+
+
+### 🌐 Acceso en vivo
+Puedes ver la aplicación funcionando aquí:
+👉 [https://table-track-three.vercel.app/](https://table-track-three.vercel.app/)
